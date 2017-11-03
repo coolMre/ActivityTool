@@ -10,55 +10,92 @@
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
-        android:layout_height="495dp"
+        android:layout_height="0dp"
         android:orientation="vertical"
         android:weightSum="1"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp">
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="8dp"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:animateLayoutChanges="true">
 
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="288dp"
+            android:layout_height="match_parent"
             android:layout_weight="1">
-
             <WebView
                 android:id="@+id/webview"
                 android:layout_width="match_parent"
-                android:layout_height="383dp"
+                android:layout_height="match_parent"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/progressBar_wb"
-                android:layout_weight="0.88">
+                >
 
             </WebView>
             <ListView
                 android:id="@+id/mlistview"
                 android:layout_width="match_parent"
-                android:layout_height="383dp"
-                android:layout_weight="0.88"
-                android:layout_below="@+id/progressBar_wb"
-                android:layout_alignParentStart="true" />
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                >
+            </ListView>
+            <ImageButton
+                android:id="@+id/xinyueimageButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
-                android:background="#ff0" />
-
-
+                android:layout_alignParentStart="true"
+                android:background="#00000000"
+                app:srcCompat="@mipmap/hide_bg" />
+            <ImageButton
+                android:id="@+id/handbtn"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:scaleType="fitXY"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:background="#00000000"
+                android:onClick="onClick"
+                app:srcCompat="@mipmap/ikons_updown" />
+            <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:background="#00000000"
+            app:srcCompat="?android:attr/actionModeCopyDrawable" />
+            <!--<ImageView-->
+                <!--android:id="@+id/imageView"-->
+                <!--android:layout_width="48dp"-->
+                <!--android:layout_height="48dp"-->
+                <!--android:layout_alignParentBottom="true"-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--app:srcCompat="?attr/actionModeCopyDrawable" />-->
             <ProgressBar
                 android:id="@+id/progressBar_wb"
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="5dp"
-                android:layout_alignParentTop="true"
                 android:layout_weight="1"
-                android:layout_x="0dp"
-                android:layout_y="0dp"
-                android:visibility="invisible" />
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:progressDrawable="@drawable/progressbar"
+                android:visibility="invisible"
+                />
         </RelativeLayout>
-
+        <LinearLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -81,37 +118,50 @@
                 android:text="领取当前" />
 
             <Button
-                android:id="@+id/button5"
+                android:id="@+id/bt_home"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:onClick="onClick"
-                android:text="Button" />
+                android:text="退出登录" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
 
             <Spinner
                 android:id="@+id/spinner_area1"
                 android:layout_width="56dp"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
+                android:scrollbarSize="20dp"
                 android:layout_weight="1" />
 
             <Spinner
                 android:id="@+id/spinner_area2"
                 android:layout_width="56dp"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
+                android:scrollbarSize="20dp"
                 android:layout_weight="1" />
 
             <Spinner
                 android:id="@+id/spinner_role"
                 android:layout_width="56dp"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
+                android:scrollbarSize="20dp"
                 android:layout_weight="1" />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/logtextView"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:scrollbars="vertical"
+            android:fadeScrollbars="false"
+            android:textSize="10dp"
+            android:text=""/>
         </LinearLayout>
 
     </LinearLayout>

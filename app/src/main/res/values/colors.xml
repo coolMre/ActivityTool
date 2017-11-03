@@ -3,4 +3,9 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <!-- item背景所需要的颜色值 -->
+    <color name="bg_selected">#87CEEB</color>
+    <color name="bg_pressed">#ffFFB6C1</color><!-- 粉色 -->
+    <color name="bg_normal">#ff00ff00</color><!-- 绿色 -->
+
 </resources>

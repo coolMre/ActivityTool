@@ -4,6 +4,9 @@ package com.tx5d.t.activitytool;
 import android.util.Log;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,42 +41,13 @@ public class QQWebProxy {
     QQWebProxy(String cookies)
     {
         mCookies=cookies;
-//        OkHttpClient.Builder builder = new OkHttpClient.Builder();
-//        builder.cookieJar(new CookieJar() {
-//            private final HashMap<String, List<Cookie>> cookieStore = new HashMap<String, List<Cookie>>();
-//
-//            @Override
-//            public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
-//                cookieStore.put(url.host(), cookies);
-//            }
-//
-//            @Override
-//            public List<Cookie> loadForRequest(HttpUrl url) {
-//                List<Cookie> cookies = cookieStore.get(url.host());
-//                return cookies != null ? cookies : new ArrayList<Cookie>();
-//            }
-//        });
-//        client = builder.build();
-//        final Request request = new Request.Builder()
-//                .url("http://game.qq.com/comm-htdocs/login/loginSuccess.html")
-//                .addHeader("Cookie",mCookies)
-//                .build();
-//        //new call
-//        Call call = client.newCall(request);
-//        //请求加入调度
-//        call.enqueue(new Callback() {
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//                //请求失败
-//            }
-//
-//            @Override
-//            public void onResponse(Call call, Response response) throws IOException {
-//                //不是UI线程,请不要在此更新界面
-//                String htmlStr = response.body().string();
-//                Log.e("TAG", "htmlStr ==" + htmlStr);
-//            }
-//        });
+        String skey=getSubUtilSimple(mCookies," skey=(.*?);");
+        String pt2gguin=getSubUtilSimple(mCookies," pt2gguin=(.*?);");
+        vule.put("{skey}",skey);
+        vule.put("{pt2gguin}",pt2gguin);
+        vule.put("{gtk}",GetToKen(skey));
+        vule.put("{ametk}",ameCSRFToken(skey));
+        vule.put("{QQ}",Long.toString( Long.valueOf(pt2gguin.substring(1))));
     }
     public static  void sendGet(String url,String Cookie,String Host, String Referer, String User_Agent,Callback callback) {
         String result = "";
@@ -136,7 +110,7 @@ public class QQWebProxy {
         //return result;
     }
 
-    public static String sendPost(String url,String postBody,String Cookie,String Host, String Referer, String User_Agent) {
+    public static void sendPost(String url,String postBody,String Cookie,String Host, String Referer, String User_Agent,Callback callback) {
 //        RequestBody requestBody = new FormBody.Builder()
 //                .add()
 //                .build();
@@ -164,25 +138,51 @@ public class QQWebProxy {
         }
 
         final Request request=req.build();
-        mOkHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                //请求失败
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                Log.e("TAG", "Result=" + response.body().string());
-            }
-        });
-        return "";
+        //new call
+        Call call = mOkHttpClient.newCall(request);
+        //请求加入调度
+        call.enqueue(callback);
+//        mOkHttpClient.newCall(request).enqueue(new Callback() {
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//                //请求失败
+//            }
+//
+//            @Override
+//            public void onResponse(Call call, Response response) throws IOException {
+//                Log.e("TAG", "Result=" + response.body().string());
+//            }
+//        });
+//        return "";
     }
-
-    /**
-     * 正则表达式匹配两个指定字符串中间的内容
-     * @param soap
-     * @return
-     */
+    public static String decodeUnicode(final String unicodeStr) {
+        if (unicodeStr == null) {
+            return null;
+        }
+        StringBuffer retBuf = new StringBuffer();
+        int maxLoop = unicodeStr.length();
+        for (int i = 0; i < maxLoop; i++) {
+            if (unicodeStr.charAt(i) == '\\') {
+                if ((i < maxLoop - 5) && ((unicodeStr.charAt(i + 1) == 'u') || (unicodeStr.charAt(i + 1) == 'U')))
+                    try {
+                        retBuf.append((char) Integer.parseInt(unicodeStr.substring(i + 2, i + 6), 16));
+                        i += 5;
+                    } catch (NumberFormatException localNumberFormatException) {
+                        retBuf.append(unicodeStr.charAt(i));
+                    }
+                else
+                    retBuf.append(unicodeStr.charAt(i));
+            } else {
+                retBuf.append(unicodeStr.charAt(i));
+            }
+        }
+        return retBuf.toString();
+    }
+        /**
+         * 正则表达式匹配两个指定字符串中间的内容
+         * @param soap
+         * @return
+         */
     public static List<String> getSubUtil(String soap,String rgex){
         List<String> list = new ArrayList<String>();
         Pattern pattern = Pattern.compile(rgex);// 匹配的模式
@@ -208,6 +208,74 @@ public class QQWebProxy {
             return m.group(1);
         }
         return "";
+    }
+    /**
+     * 将字符串转成MD5值
+     *
+     * @param string
+     * @return
+     */
+    public static String stringToMD5(String string) {
+        byte[] hash;
+        try {
+            hash = MessageDigest.getInstance("MD5").digest(string.getBytes("UTF-8"));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
+        StringBuilder hex = new StringBuilder(hash.length * 2);
+        for (byte b : hash) {
+            if ((b & 0xFF) < 0x10)
+                hex.append("0");
+            hex.append(Integer.toHexString(b & 0xFF));
+        }
+        return hex.toString().toLowerCase();
+    }
+    public static String join(String join,String[] strAry){
+        StringBuffer sb=new StringBuffer();
+        for(int i=0;i<strAry.length;i++){
+            if(i==(strAry.length-1)){
+                sb.append(strAry[i]);
+            }else{
+                sb.append(strAry[i]).append(join);
+            }
+        }
+
+        return new String(sb);
+    }
+
+    public String GetToKen(String key)
+    {
+        String skey = key;
+        int salt = 5381, ASCIICode;
+        String md5key = "tencentQQVIP123443safde&!%^%1282";
+        List<String> hash = new ArrayList<String>();
+        hash.add(Integer.toString(salt << 5));
+        for (int i = 0, len = skey.length(); i < len; ++i)
+        {
+            ASCIICode = (short)skey.toCharArray()[i];
+            hash.add(Integer.toString((salt << 5) + ASCIICode));
+            salt = ASCIICode;
+        }
+        String md5str = join("", hash.toArray(new String[hash.size()])) + md5key;
+        return stringToMD5(md5str);
+    }
+    public String ameCSRFToken(String key)
+    {
+        //var sAMEStr = milo.cookie.get("skey") || "a1b2c3";
+        String skey = key;
+        int hash = 5381, ASCIICode;
+
+        for (int i = 0, len = skey.length(); i < len; ++i)
+        {
+            ASCIICode = (short)skey.toCharArray()[i];
+            hash += (hash << 5) + ASCIICode;
+        }
+        String rul = Integer.toString(hash & 2147483647);
+        return rul;
     }
 
 
